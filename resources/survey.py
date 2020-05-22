@@ -15,7 +15,7 @@ class Survey(Resource):
     parser.add_argument('price',
         type=float,
         required=True,
-        help="This field cannot be left blank!"
+        help="This field cannot be left blank !"
     )
 
     @jwt_required()
