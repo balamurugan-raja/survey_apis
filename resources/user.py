@@ -55,7 +55,7 @@ class UserArray(Resource):
         usercursor = userlist.find()
         userarray = []
         for userobj in usercursor:
-                userarray.append({ 'userid': userobj['userid'], 'email': userobj['email'], 'username': userobj['username'], 'password': userobj['password'] })
+                userarray.append({ 'userid': userobj['_id'], 'email': userobj['email'], 'username': userobj['username'], 'password': userobj['password'] })
                 pprint(userobj)
         pprint(userarray)
         return userarray
