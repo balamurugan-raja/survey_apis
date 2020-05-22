@@ -5,6 +5,7 @@ from bson.json_util import dumps
 from flask_restful import Resource, reqparse
 from pprint import pprint
 from flask_jwt import jwt_required
+from models.user import UserModel
 
 
 
