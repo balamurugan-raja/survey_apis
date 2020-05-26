@@ -33,18 +33,28 @@ class UserRegister(Resource):
 
         if UserModel.find_by_username(data['username']):
             return {"message": "User with that username already exists."}, 400
-
+        
+        
         client = pymongo.MongoClient("mongodb://balamuruganraja:Tcs2020@test1-shard-00-00-apxrb.azure.mongodb.net:27017,test1-shard-00-01-apxrb.azure.mongodb.net:27017,test1-shard-00-02-apxrb.azure.mongodb.net:27017/test?ssl=true&replicaSet=Test1-shard-0&authSource=admin&retryWrites=true&w=majority")
         userdb = client["User"]
         userlist = userdb["userlist"]
         
+        
         usercursor = userlist.find().sort('_id', pymongo.DESCENDING)[0]
         counter = (usercursor['_id']) + 1
         pprint(counter)
+
+        created_user = UserModel.create_user(counter, data['email'], data['username'],data['password'])
+
+        """
         userobj = {'_id':counter, 'email': data['email'], 'username': data['username'], 'password': data['password']}
         userlist.insert(userobj)
-
-        return {"message": "User created successfully."}, 201
+        """
+        if created_user:
+            pprint(created_user.username)
+            return {"message": "User created successfully."}, 201
+        else:
+            return {"message": "User Not Created."}
 
 class UserArray(Resource):
     @jwt_required()

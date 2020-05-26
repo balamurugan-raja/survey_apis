@@ -11,6 +11,8 @@ from resources.user import UserRegister, UserArray
 from resources.survey import Survey 
 
 from models.user import UserModel
+import mongoengine
+import data.mongo_setup as mongo_setup
 
 app = Flask(__name__)
 app.config['PROPAGATE_EXCEPTIONS'] = True
@@ -22,6 +24,8 @@ jwt = JWT(app, authenticate, identity)
 api.add_resource(UserRegister, '/register')
 api.add_resource(UserArray, '/userarray')
 api.add_resource(Survey, '/survey/<string:surveyname>')
+
+mongo_setup.global_init()
 
 if __name__ == '__main__':
     app.run(debug=True)  
