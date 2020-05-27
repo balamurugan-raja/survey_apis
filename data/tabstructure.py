@@ -1,6 +1,6 @@
 import mongoengine
-from data.tabquestion import Tabquestion
+from data.tabquestion import TabQuestion
 
-class Tabstructure(mongoengine.EmbeddedDocument)
+class Tabstructure(mongoengine.EmbeddedDocument):
     tabname = mongoengine.StringField()
-    tabquestions = mongoengine.EmbeddedDocumentListField(Tabquestion)
+    tabquestions = mongoengine.EmbeddedDocumentListField(TabQuestion)
