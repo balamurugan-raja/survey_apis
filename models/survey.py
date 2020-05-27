@@ -6,58 +6,64 @@ from bson.json_util import dumps
 from flask_restful import Resource, reqparse
 from pprint import pprint
 from flask_jwt import jwt_required
-from data.template import Template
+from data.surveyform import Surveyform
 from data.tabstructure import Tabstructure
 from data.tabquestion import TabQuestion
 from pprint import pprint
 import json
 
-class Templatemodel(Resource):
+class Surveymodel(Resource):
     
     
-    def find_by_templatename(templatename) -> Template:
-        pprint(templatename)
-        templateobject = Template.objects(name=templatename).first().to_json()
-        return templateobject
+    def find_by_surveyname(surveyname) -> Surveyform:
+        pprint(surveyname)
+        surveyobject = Surveyform.objects(survey_name=surveyname).first()
+        if surveyobject:
+            retsurveyobject = surveyobject.to_json()
+            return retsurveyobject
+        return surveyobject
     
       
-    def find_by_templateid(templateid) -> Template:
-        pprint(templateid)
-        templateobject = Template.objects(_id=templateid).first()
+    def find_by_surveyid(surveyid) -> Surveyform:
+        pprint(surveyid)
+        surveyobject = Surveyform.objects(_id=surveyid).first()
                 
-        if templateobject:
-            pprint(templateobject.name)
+        if surveyobject:
+            pprint(surveyobject.name)
         else:
-            templateobject = None
-        return templateobject
+            surveyobject = None
+        return surveyobject
 
    
     
-    def find_all_templates()  -> Template:
-        template = Template()
-        pprint('find all template method reached')
-        queryset = Template.objects().order_by('-_id')
-        template_collection = queryset.to_json()
+    def find_all_surveys()  -> Surveyform:
+        survey = Surveyform()
+        pprint('find all survey method reached')
+        queryset = Surveyform.objects().order_by('-_id')
+        survey_collection = queryset.to_json()
         #for temp in queryset:
-        #    template_collection.append(temp.to_json)
-           #template_collection = Templatemodel.responsemapper(temp)
+        #    survey_collection.append(temp.to_json)
+           #survey_collection = Surveymodel.responsemapper(temp)
         
-        pprint(template_collection)
+        pprint(survey_collection)
         
-        return template_collection
+        return survey_collection
    
     
-    def requestmapper(data)  -> Template:
+    def requestmapper(data)  -> Surveyform:
         pprint("Entered Mapper method")
-        template = Template()
-        template.name =data['template_name']
-
+        survey = Surveyform()
+        survey._id = Surveymodel.getcounter()
+        survey.survey_name =data['survey_name']
+        survey.template_id = data['template_id']
+        survey.surveycreator_id = data['surveycreator_id']
+        
         temp_taglist = []
-        for tag in data['tags']:
+        for tag in data['surveytags']:
             temp_taglist.append(tag)
         
         pprint(temp_taglist)
-        template.tags = temp_taglist
+        survey.surveytags = temp_taglist
 
         temp_tablist = []
         for tab in data['tabs']:
@@ -76,31 +82,31 @@ class Templatemodel(Resource):
             tabobject.tabquestions = tabquestionobjectlist
             temp_tablist.append(tabobject)
 
-        template.tabs = temp_tablist            
-        pprint(template)
+        survey.tabs = temp_tablist            
+        pprint(survey)
                      
             
-        return template
+        return survey
     
-    def responsemapper(queriedtemplate):
+    def responsemapper(queriedsurvey):
         pprint("Entered Response Mapper method")
 
-        responsetemplate = [{'template_id': queriedtemplate._id, 'template_name':queriedtemplate.name, "tags":[] }]
+        responsesurvey = [{'survey_id': queriedsurvey._id, 'survey_name':queriedsurvey.name, "tags":[] }]
         
         
         tabquestions= []
 
-        responsetemplate['_id': queriedtemplate._id]
-        responsetemplatetags= []
-        for tags in queriedtemplate.tags:
-            responsetemplatetags.append(tags)
+        responsesurvey['_id': queriedsurvey._id]
+        responsesurveytags= []
+        for tags in queriedsurvey.tags:
+            responsesurveytags.append(tags)
         
         responsetabs = []
-        for tabs in queriedtemplate.tabs:
+        for tabs in queriedsurvey.tabs:
             tab_questions = []
-            for question in queriedtemplate.tabs.tabquestions:
+            for question in queriedsurvey.tabs.tabquestions:
                 response_options = []
-                for response in queriedtemplate.tabs.tabquestions.responseoptions:
+                for response in queriedsurvey.tabs.tabquestions.responseoptions:
                     response_question = [{'q_id': question.q_id, 'q_text': question.q_text, 'responseoptions':[]} ]
             response_tab= [{'tabname': tabs.tabname, 'tab_questions': []}]
             responsetabs.append()
@@ -108,15 +114,15 @@ class Templatemodel(Resource):
 
 
         responsearray = []
-        template = Template()
-        template.name =data['template_name']
+        survey = Surveyform()
+        survey.name =data['survey_name']
 
         temp_taglist = []
         for tag in data['tags']:
             temp_taglist.append(tag)
         
         pprint(temp_taglist)
-        template.tags = temp_taglist
+        survey.tags = temp_taglist
 
         temp_tablist = []
         for tab in data['tabs']:
@@ -135,19 +141,19 @@ class Templatemodel(Resource):
             tabobject.tabquestions = tabquestionobjectlist
             temp_tablist.append(tabobject)
 
-        template.tabs = temp_tablist            
-        pprint(template)
+        survey.tabs = temp_tablist            
+        pprint(survey)
                      
             
-        return template
+        return survey
     
     
     def getcounter():
-        template = Template()
+        survey = Surveyform()
         counter = 1
-        firsttemplate = Template.objects().order_by('-_id').first()
-        if firsttemplate:
-            counter = (firsttemplate._id) + 1
+        firstsurvey = Surveyform.objects().order_by('-_id').first()
+        if firstsurvey:
+            counter = (firstsurvey._id) + 1
             pprint(counter)
         return counter
     

@@ -12,6 +12,4 @@ class Template(mongoengine.Document):
     meta = {
             'db_alias': 'surveydb',
             'collection':'templates',
-            'allow_inheritance': True,
-            'index_cls': False   
-    }
+           }

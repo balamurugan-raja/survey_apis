@@ -1,61 +1,70 @@
-from flask_restful import Resource, reqparse
+from flask import Flask, jsonify
+from flask_restful import Resource, reqparse, request
 from flask_jwt import jwt_required
 import pymongo
 from pymongo import MongoClient
 from bson import json_util
 from bson.json_util import dumps
-
+from models.survey import Surveymodel
+from pprint import pprint
 
 class Survey(Resource):
-    client = pymongo.MongoClient("mongodb://balamuruganraja:Tcs2020@test1-shard-00-00-apxrb.azure.mongodb.net:27017,test1-shard-00-01-apxrb.azure.mongodb.net:27017,test1-shard-00-02-apxrb.azure.mongodb.net:27017/test?ssl=true&replicaSet=Test1-shard-0&authSource=admin&retryWrites=true&w=majority")
-    surveydb = client["dsurveys"]
-    survey_col = surveydb["surveydata"]
+    #parser = reqparse.RequestParser()
+    #data = request.get_json()
 
-    parser = reqparse.RequestParser()
-    parser.add_argument('price',
-        type=float,
-        required=True,
-        help="This field cannot be left blank !"
-    )
+    #@jwt_required()
+    def post(self):
+        data = request.get_json()
+        
+        #data = Survey.parser.parse_args()
+        pprint('survey post method')
+        surveyindb = Surveymodel.find_by_surveyname(data['survey_name'])
+        if surveyindb:
+            return {"message": "Survey with that Name already exists."}, 400
+        
+        
 
-    @jwt_required()
-    def get(self, name):
-        item = self.find_by_name(name)
-        if item:
-            return item
-        return {'message': 'Item not found'}, 404
-
-    @classmethod
-    def find_by_name(cls, name):
-       pass
-
-    def post(self, name):
-        if self.find_by_name(name):
-            return {'message': "An item with name '{}' already exists.".format(name)}
-
-        pass
-
-    @classmethod
-    def insert(cls, item):
-        pass
-
-    @jwt_required()
-    def delete(self, name):
-        pass
-
-    @jwt_required()
-    def put(self, name):
-        pass
-
-    @classmethod
-    def update(cls, item):
-       pass
-
-
-class Surveylist(Resource):
-    client = pymongo.MongoClient("mongodb://balamuruganraja:Tcs2020@test1-shard-00-00-apxrb.azure.mongodb.net:27017,test1-shard-00-01-apxrb.azure.mongodb.net:27017,test1-shard-00-02-apxrb.azure.mongodb.net:27017/test?ssl=true&replicaSet=Test1-shard-0&authSource=admin&retryWrites=true&w=majority")
-    surveydb = client["dsurveys"]
-    survey_col = surveydb["surveydata"]
+        survey_tobecreated = Surveymodel.requestmapper(data)
+        
+        survey = survey_tobecreated.save()
+        
+        if survey_tobecreated:
+            pprint(survey_tobecreated._id)
+            return {"message": "Survey created successfully.", "survey_id": survey_tobecreated._id}, 201
+        else:
+            return {"message": "Survey Not Created."}
     
+    #@jwt_required()
     def get(self):
-        pass
+        
+        pprint("reached survey array method")
+        client = pymongo.MongoClient("mongodb://balamuruganraja:Tcs2020@test1-shard-00-00-apxrb.azure.mongodb.net:27017,test1-shard-00-01-apxrb.azure.mongodb.net:27017,test1-shard-00-02-apxrb.azure.mongodb.net:27017/test?ssl=true&replicaSet=Test1-shard-0&authSource=admin&retryWrites=true&w=majority")
+        userdb = client["User"]
+        userlist = userdb["userlist"]
+        usercursor = userlist.find()
+        userarray = []
+        for userobj in usercursor:
+                userarray.append({ 'userid': userobj['_id'], 'email': userobj['email'], 'username': userobj['username'], 'password': userobj['password'] })
+                pprint(userobj)
+        pprint(userarray)
+        return userarray
+
+
+class Surveydata(Resource):
+    #@jwt_required()
+    def get(self,name):
+        surveyindb = Surveymodel.find_by_surveyname(name)
+        if surveyindb:
+            return surveyindb
+        else:
+            return {"message": "No such Survey exists."}
+
+class SurveyArray(Resource):
+    #@jwt_required()
+    def get(self):
+        surveysindb = Surveymodel.find_all_surveys()
+        if surveysindb:
+            return surveysindb
+        else:
+            return {"message": "No Surveys found."}
+

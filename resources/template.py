@@ -1,3 +1,4 @@
+from flask import Flask, jsonify
 from flask_restful import Resource, reqparse, request
 from flask_jwt import jwt_required
 import pymongo
@@ -31,3 +32,37 @@ class Template(Resource):
             return {"message": "Template created successfully.", "template_id": saved_template._id}, 201
         else:
             return {"message": "Template Not Created."}
+    
+    def get(self):
+        
+        pprint("reached template array method")
+        client = pymongo.MongoClient("mongodb://balamuruganraja:Tcs2020@test1-shard-00-00-apxrb.azure.mongodb.net:27017,test1-shard-00-01-apxrb.azure.mongodb.net:27017,test1-shard-00-02-apxrb.azure.mongodb.net:27017/test?ssl=true&replicaSet=Test1-shard-0&authSource=admin&retryWrites=true&w=majority")
+        userdb = client["User"]
+        userlist = userdb["userlist"]
+        usercursor = userlist.find()
+        userarray = []
+        for userobj in usercursor:
+                userarray.append({ 'userid': userobj['_id'], 'email': userobj['email'], 'username': userobj['username'], 'password': userobj['password'] })
+                pprint(userobj)
+        pprint(userarray)
+        return userarray
+
+
+class Templatedata(Resource):
+    #@jwt_required()
+    def get(self,name):
+        templateindb = Templatemodel.find_by_templatename(name)
+        if templateindb:
+            return templateindb
+        else:
+            return {"message": "No such Template exists."}
+
+class TemplateArray(Resource):
+    #@jwt_required()
+    def get(self):
+        templatesindb = Templatemodel.find_all_templates()
+        if templatesindb:
+            return templatesindb
+        else:
+            return {"message": "No Templates found."}
+

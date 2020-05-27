@@ -9,7 +9,7 @@ from security import   authenticate, identity
 from security import authenticate, identity
 from resources.user import UserRegister, UserArray
 from resources.survey import Survey 
-from resources.template import Template 
+from resources.template import Template, TemplateArray, Templatedata
 from models.user import UserModel
 import mongoengine
 import data.mongo_setup as mongo_setup
@@ -23,8 +23,10 @@ jwt = JWT(app, authenticate, identity)
 
 api.add_resource(UserRegister, '/register')
 api.add_resource(UserArray, '/userarray')
-api.add_resource(Survey, '/survey/<string:surveyname>')
+api.add_resource(Survey, '/survey')
 api.add_resource(Template, '/template')
+api.add_resource(Templatedata, '/templatedata/<string:name>')
+api.add_resource(TemplateArray, '/templatearray')
 
 mongo_setup.global_init()
 
