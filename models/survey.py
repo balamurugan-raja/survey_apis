@@ -7,8 +7,11 @@ from flask_restful import Resource, reqparse
 from pprint import pprint
 from flask_jwt import jwt_required
 from data.surveyform import Surveyform
+from data.surveyresponse import Surveyresponse
+from data.surveyscore import Surveyscore
 from data.tabstructure import Tabstructure
 from data.tabquestion import TabQuestion
+from data.tabresponse import Tabresponse, Qresponses
 from pprint import pprint
 import json
 
@@ -41,10 +44,7 @@ class Surveymodel(Resource):
         pprint('find all survey method reached')
         queryset = Surveyform.objects().order_by('-_id')
         survey_collection = queryset.to_json()
-        #for temp in queryset:
-        #    survey_collection.append(temp.to_json)
-           #survey_collection = Surveymodel.responsemapper(temp)
-        
+                
         pprint(survey_collection)
         
         return survey_collection
@@ -88,70 +88,65 @@ class Surveymodel(Resource):
             
         return survey
     
-    def responsemapper(queriedsurvey):
-        pprint("Entered Response Mapper method")
-
-        responsesurvey = [{'survey_id': queriedsurvey._id, 'survey_name':queriedsurvey.name, "tags":[] }]
-        
-        
-        tabquestions= []
-
-        responsesurvey['_id': queriedsurvey._id]
-        responsesurveytags= []
-        for tags in queriedsurvey.tags:
-            responsesurveytags.append(tags)
-        
-        responsetabs = []
-        for tabs in queriedsurvey.tabs:
-            tab_questions = []
-            for question in queriedsurvey.tabs.tabquestions:
-                response_options = []
-                for response in queriedsurvey.tabs.tabquestions.responseoptions:
-                    response_question = [{'q_id': question.q_id, 'q_text': question.q_text, 'responseoptions':[]} ]
-            response_tab= [{'tabname': tabs.tabname, 'tab_questions': []}]
-            responsetabs.append()
-        response
-
-
-        responsearray = []
-        survey = Surveyform()
-        survey.name =data['survey_name']
-
-        temp_taglist = []
-        for tag in data['tags']:
-            temp_taglist.append(tag)
-        
-        pprint(temp_taglist)
-        survey.tags = temp_taglist
-
+    
+    
+    
+    def surveyresmapper(data) -> Surveyresponse:
+        pprint("Entered Mapper method")
+        survey = Surveyresponse()
+        survey._id = Surveymodel.getrespcounter()
+        survey.participant_id = data['participant_id']
+                
         temp_tablist = []
-        for tab in data['tabs']:
-            tabobject = Tabstructure()
+        for tab in data['tab_responses']:
+            tabobject = Tabresponse()
             tabobject.tabname = tab['tabname']
+            tabobject.tab_score = tab['tab_score']
             tabquestionobjectlist = []
-            for tabitem in tab['tabquestions']:
-                tabquestionobject= TabQuestion()
+            for tabitem in tab['q_responses']:
+                tabquestionobject= Qresponses()
                 tabquestionobject.q_id = tabitem['q_id']
-                tabquestionobject.q_text = tabitem['q_text']
-                responseoptions =[]
-                for resoption in tabitem['q_responseoptions']:
-                    responseoptions.append(resoption)
-                tabquestionobject.q_responseoptions= responseoptions
+                resp_text = tabitem['resp_text']
+                if resp_text:
+                    tabquestionobject.resp_text = tabitem['resp_text']
+                    pprint(tabitem['resp_text'])
+                
+                resp_num = tabitem['resp_num']
+                if resp_num:
+                    tabquestionobject.resp_num = tabitem['resp_num']
+                tabquestionobject.resp_score = tabitem['resp_score']
                 tabquestionobjectlist.append(tabquestionobject)
-            tabobject.tabquestions = tabquestionobjectlist
+            tabobject.q_responses = tabquestionobjectlist
             temp_tablist.append(tabobject)
 
-        survey.tabs = temp_tablist            
+        survey.tab_responses = temp_tablist 
+
+        temp_survey_scores = []
+        for temp_list in data['survey_scores']:
+            temp_surveyscore = Surveyscore()
+            temp_surveyscore.tab_name = temp_list['tab_name']
+            temp_surveyscore.tab_score = temp_list['tab_score']
+            temp_survey_scores.append(temp_surveyscore)
+        
+        survey.survey_scores = temp_survey_scores
+
         pprint(survey)
-                     
-            
+                
         return survey
-    
     
     def getcounter():
         survey = Surveyform()
         counter = 1
         firstsurvey = Surveyform.objects().order_by('-_id').first()
+        if firstsurvey:
+            counter = (firstsurvey._id) + 1
+            pprint(counter)
+        return counter
+    
+    def getrespcounter():
+        survey = Surveyresponse()
+        counter = 1
+        firstsurvey = Surveyresponse.objects().order_by('-_id').first()
         if firstsurvey:
             counter = (firstsurvey._id) + 1
             pprint(counter)

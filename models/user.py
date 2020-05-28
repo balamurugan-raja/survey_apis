@@ -6,7 +6,7 @@ from flask_restful import Resource, reqparse
 from pprint import pprint
 from flask_jwt import jwt_required
 from data.user import User
-
+from pprint import pprint
 
 class UserModel():
     

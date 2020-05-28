@@ -68,3 +68,17 @@ class SurveyArray(Resource):
         else:
             return {"message": "No Surveys found."}
 
+class Surveyresponse(Resource):
+
+    def post(self):
+        pprint('surveyresponse post method')
+        data = request.get_json()
+        surveres_tobecreated = Surveymodel.surveyresmapper(data)
+        surveyres = surveres_tobecreated.save()
+        
+        if surveyres:
+            pprint(surveyres._id)
+            return {"message": "Survey Response Submitted successfully."}, 201
+        else:
+            return {"message": "Survey Response Not Submitted."}
+

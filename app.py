@@ -8,7 +8,7 @@ from security import   authenticate, identity
 
 from security import authenticate, identity
 from resources.user import UserRegister, UserArray
-from resources.survey import Survey 
+from resources.survey import Survey, Surveydata, Surveyresponse
 from resources.template import Template, TemplateArray, Templatedata
 from models.user import UserModel
 import mongoengine
@@ -23,7 +23,12 @@ jwt = JWT(app, authenticate, identity)
 
 api.add_resource(UserRegister, '/register')
 api.add_resource(UserArray, '/userarray')
+
 api.add_resource(Survey, '/survey')
+api.add_resource(Surveydata, '/surveydata/<string:name>')
+api.add_resource(Surveyresponse, '/surveyresponse')
+
+
 api.add_resource(Template, '/template')
 api.add_resource(Templatedata, '/templatedata/<string:name>')
 api.add_resource(TemplateArray, '/templatearray')
