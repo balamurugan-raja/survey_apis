@@ -74,10 +74,12 @@ class Surveymodel(Resource):
                 tabquestionobject= TabQuestion()
                 tabquestionobject.q_id = tabitem['q_id']
                 tabquestionobject.q_text = tabitem['q_text']
-                responseoptions =[]
-                for resoption in tabitem['q_responseoptions']:
-                    responseoptions.append(resoption)
-                tabquestionobject.q_responseoptions= responseoptions
+                tabquestionobject.q_responsetype = tabitem['q_responsetype']
+                if tabquestionobject.q_responsetype == "select" :
+                    responseoptions =[]
+                    for resoption in tabitem['q_responseoptions']:
+                        responseoptions.append(resoption)
+                    tabquestionobject.q_responseoptions= responseoptions
                 tabquestionobjectlist.append(tabquestionobject)
             tabobject.tabquestions = tabquestionobjectlist
             temp_tablist.append(tabobject)

@@ -60,8 +60,8 @@ class Templatemodel(Resource):
         for tag in data['tags']:
             temp_taglist.append(tag)
         
-        pprint(temp_taglist)
         template.tags = temp_taglist
+        template.templatecreator_id = data['templatecreator_id']
 
         temp_tablist = []
         for tab in data['tabs']:

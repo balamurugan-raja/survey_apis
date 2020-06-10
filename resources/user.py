@@ -27,6 +27,12 @@ class UserRegister(Resource):
                         required=True,
                         help="This field cannot be left blank!"
                         )
+    parser.add_argument('role',
+                        type=str,
+                        required= False,
+                        help="This field is optional"
+                        )
+                        
 
     def post(self):
         data = UserRegister.parser.parse_args()
@@ -43,15 +49,16 @@ class UserRegister(Resource):
         usercursor = userlist.find().sort('_id', pymongo.DESCENDING)[0]
         counter = (usercursor['_id']) + 1
         pprint(counter)
+        pprint(data['role'])
+        role = data['role']
 
-        created_user = UserModel.create_user(counter, data['email'], data['username'],data['password'])
+        created_user = UserModel.create_user(counter, data['email'], data['username'],data['password'], role)
 
         """
         userobj = {'_id':counter, 'email': data['email'], 'username': data['username'], 'password': data['password']}
         userlist.insert(userobj)
         """
         if created_user:
-            pprint(created_user.username)
             return {"message": "User created successfully."}, 201
         else:
             return {"message": "User Not Created."}
@@ -66,7 +73,7 @@ class UserArray(Resource):
         usercursor = userlist.find()
         userarray = []
         for userobj in usercursor:
-                userarray.append({ 'userid': userobj['_id'], 'email': userobj['email'], 'username': userobj['username'], 'password': userobj['password'] })
+                userarray.append({ 'userid': userobj['_id'], 'email': userobj['email'], 'username': userobj['username'], 'password': userobj['password'], 'role': userobj['role']  })
                 pprint(userobj)
         pprint(userarray)
         return userarray

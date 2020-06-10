@@ -5,6 +5,7 @@ class User(mongoengine.Document):
     email = mongoengine.StringField()
     username = mongoengine.StringField()
     password = mongoengine.StringField()
+    role = mongoengine.StringField(default="participant")
 
     meta = {
             'db_alias': 'userdb',

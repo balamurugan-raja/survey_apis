@@ -10,11 +10,12 @@ from pprint import pprint
 
 class UserModel():
     
-    def __init__(self, _id, email, username, password):
+    def __init__(self, _id, email, username, password, role):
         self.id = _id
         self.email = email
         self.username = username
         self.password = password
+        self.role = role
 
     @classmethod
     def find_by_username(cls, username) -> User:
@@ -27,6 +28,7 @@ class UserModel():
             user.password = login_user.password
             user.email = login_user.email
             user.id = login_user._id
+            user.role = login_user.role
         else:
             user = None
         return user
@@ -42,19 +44,20 @@ class UserModel():
             user.password = login_user.password
             user.email = login_user.email
             user.id = login_user._id
+            user.role = login_user.role
         else:
             user = None
         return user
 
    
     @classmethod
-    def create_user(cls, _id, email, username, password)  -> User:
+    def create_user(cls, _id, email, username, password, role)  -> User:
         user = User()
         user._id =_id
         user.email = email
         user.username = username
         user.password = password
-
+        user.role = role
         user.save()
         return user
 
