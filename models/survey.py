@@ -41,12 +41,9 @@ class Surveymodel(Resource):
     
     def find_all_surveys()  -> Surveyform:
         survey = Surveyform()
-        pprint('find all survey method reached')
         queryset = Surveyform.objects().order_by('-_id')
         survey_collection = queryset.to_json()
                 
-        pprint(survey_collection)
-        
         return survey_collection
    
     
@@ -90,7 +87,23 @@ class Surveymodel(Resource):
             
         return survey
     
+    def get_sur_res_by_surveyid(survey_id) -> Surveyresponse:
+        pprint(survey_id)
+        surveyresobject = Surveyresponse.objects(survey_id=survey_id)
+        if surveyresobject:
+            retsurveyresobject = surveyresobject.to_json()
+            return retsurveyresobject
+        else:
+            return surveyresobject
     
+    def get_sur_res_by_part_id(survey_id, participant_id) -> Surveyresponse:
+        pprint(survey_id)
+        surveyresobject = Surveyresponse.objects(survey_id=survey_id, participant_id=participant_id)
+        if surveyresobject:
+            retsurveyresobject = surveyresobject.to_json()
+            return retsurveyresobject
+        else:
+            return surveyresobject
     
     
     def surveyresmapper(data) -> Surveyresponse:
@@ -98,7 +111,7 @@ class Surveymodel(Resource):
         survey = Surveyresponse()
         survey._id = Surveymodel.getrespcounter()
         survey.participant_id = data['participant_id']
-                
+        survey.survey_id = data['survey_id']      
         temp_tablist = []
         for tab in data['tab_responses']:
             tabobject = Tabresponse()

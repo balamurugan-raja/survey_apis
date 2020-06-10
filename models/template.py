@@ -11,7 +11,7 @@ from data.tabstructure import Tabstructure
 from data.tabquestion import TabQuestion
 from pprint import pprint
 import json
-
+from models.user import UserModel
 class Templatemodel(Resource):
     
     
@@ -41,13 +41,17 @@ class Templatemodel(Resource):
         template = Template()
         pprint('find all template method reached')
         queryset = Template.objects().order_by('-_id')
-        template_collection = queryset.to_json()
-        #for temp in queryset:
-        #    template_collection.append(temp.to_json)
-           #template_collection = Templatemodel.responsemapper(temp)
-        
-        pprint(template_collection)
-        
+        pprint( queryset)
+        template_collection = []
+        for template_obj in queryset:
+            pprint('iterating through queryset')
+            taglist = []
+            for tag in template_obj['tags'] :
+                taglist.append(tag)
+            user = UserModel.finduser_by_user_id(template_obj.templatecreator_id)
+            template_object = {'template_id': template_obj._id, 'template_name':template_obj.name, 'templatecreator_id': template_obj.templatecreator_id, 't_creator_name': user.username, 'taglist' : taglist}
+            template_collection.append(template_object)
+
         return template_collection
    
     
@@ -88,6 +92,7 @@ class Templatemodel(Resource):
             
         return template
     
+    #Method not in use
     def responsemapper(queriedtemplate):
         pprint("Entered Response Mapper method")
 

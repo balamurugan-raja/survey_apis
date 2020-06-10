@@ -3,6 +3,7 @@ from pymongo import MongoClient
 from bson import json_util
 from bson.json_util import dumps
 from flask_restful import Resource, reqparse
+from flask import Flask, jsonify
 from pprint import pprint
 from flask_jwt import jwt_required
 from models.user import UserModel
@@ -77,3 +78,11 @@ class UserArray(Resource):
                 pprint(userobj)
         pprint(userarray)
         return userarray
+
+class UserDetails(Resource):
+    @jwt_required()
+    def get(self, username):
+        
+        userdetails = UserModel.finduser_by_username(username)
+        
+        return userdetails

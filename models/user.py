@@ -7,6 +7,7 @@ from pprint import pprint
 from flask_jwt import jwt_required
 from data.user import User
 from pprint import pprint
+import json
 
 class UserModel():
     
@@ -32,6 +33,22 @@ class UserModel():
         else:
             user = None
         return user
+
+    def finduser_by_username(username) -> User:
+        pprint(username)
+        login_user = User.objects(username=username).first()
+                
+        if login_user:
+            retuserdetails = login_user.to_json()
+        else:
+            retuserdetails = None
+        return retuserdetails
+    
+    def finduser_by_user_id(user_id) -> User:
+        pprint(user_id)
+        login_user = User.objects(_id=user_id).first()
+                
+        return login_user
 
     @classmethod
     def find_by_id(cls, _id) -> User:

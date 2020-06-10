@@ -9,9 +9,7 @@ from models.survey import Surveymodel
 from pprint import pprint
 
 class Survey(Resource):
-    #parser = reqparse.RequestParser()
-    #data = request.get_json()
-
+    
     #@jwt_required()
     def post(self):
         data = request.get_json()
@@ -73,12 +71,28 @@ class Surveyresponse(Resource):
     def post(self):
         pprint('surveyresponse post method')
         data = request.get_json()
-        surveres_tobecreated = Surveymodel.surveyresmapper(data)
-        surveyres = surveres_tobecreated.save()
+        if Surveymodel.get_sur_res_by_part_id(data['survey_id'], data['participant_id']):
+            return {"message": "Survey response for this Participant already exists."}, 208
+        else :
+            surveres_tobecreated = Surveymodel.surveyresmapper(data)
+            surveyres = surveres_tobecreated.save()
+            if surveyres:
+                pprint(surveyres._id)
+                return {"message": "Survey Response Submitted successfully."}, 201
+            else:
+                return {"message": "Survey Response Not Submitted."}
         
-        if surveyres:
-            pprint(surveyres._id)
-            return {"message": "Survey Response Submitted successfully."}, 201
+
+class GetSurveyResponses(Resource):
+
+    def get(self, survey_id):
+        pprint('surveyresponse get method')
+        
+        survey_respones = Surveymodel.get_sur_res_by_surveyid(survey_id)
+        if survey_respones:
+            return survey_respones
         else:
-            return {"message": "Survey Response Not Submitted."}
+            return {"message": "Survey Response not found"}
+        
+        
 
