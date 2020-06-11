@@ -11,7 +11,7 @@ from pprint import pprint
 class Template(Resource):
     #parser = reqparse.RequestParser()
     #data = request.get_json()
-
+    @jwt_required()
     def post(self):
         data = request.get_json()
         
@@ -33,6 +33,7 @@ class Template(Resource):
         else:
             return {"message": "Template Not Created."}
     
+    @jwt_required()
     def get(self):
         
         pprint("reached template array method")
@@ -49,7 +50,7 @@ class Template(Resource):
 
 
 class Templatedata(Resource):
-    #@jwt_required()
+    @jwt_required()
     def get(self,name):
         templateindb = Templatemodel.find_by_templatename(name)
         if templateindb:
@@ -58,7 +59,7 @@ class Templatedata(Resource):
             return {"message": "No such Template exists."}
 
 class TemplateArray(Resource):
-    #@jwt_required()
+    @jwt_required()
     def get(self):
         templatesindb = Templatemodel.find_all_templates()
         if templatesindb:

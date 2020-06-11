@@ -10,7 +10,7 @@ from pprint import pprint
 
 class Survey(Resource):
     
-    #@jwt_required()
+    @jwt_required()
     def post(self):
         data = request.get_json()
         
@@ -32,7 +32,7 @@ class Survey(Resource):
         else:
             return {"message": "Survey Not Created."}
     
-    #@jwt_required()
+    @jwt_required()
     def get(self):
         
         pprint("reached survey array method")
@@ -58,7 +58,7 @@ class Surveydata(Resource):
             return {"message": "No such Survey exists."}
 
 class SurveyArray(Resource):
-    #@jwt_required()
+    @jwt_required()
     def get(self):
         surveysindb = Surveymodel.find_all_surveys()
         if surveysindb:
@@ -84,7 +84,7 @@ class Surveyresponse(Resource):
         
 
 class GetSurveyResponses(Resource):
-
+    @jwt_required()
     def get(self, survey_id):
         pprint('surveyresponse get method')
         
