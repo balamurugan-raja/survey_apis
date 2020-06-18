@@ -13,3 +13,4 @@ Flask-JWT==0.3.2
 pymongo==3.10.1
 uwsgi
 mongoengine
+flask-cors
