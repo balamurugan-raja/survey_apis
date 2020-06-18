@@ -6,6 +6,7 @@ from pymongo import MongoClient
 from bson import json_util
 from bson.json_util import dumps
 from models.survey import Surveymodel
+from models.user import UserModel
 from pprint import pprint
 
 class Survey(Resource):
@@ -59,8 +60,8 @@ class Surveydata(Resource):
 
 class SurveyArray(Resource):
     @jwt_required()
-    def get(self):
-        surveysindb = Surveymodel.find_all_surveys()
+    def get(self, creator_id):
+        surveysindb = Surveymodel.find_all_surveys_for_userid(creator_id)
         if surveysindb:
             return surveysindb
         else:

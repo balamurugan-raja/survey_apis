@@ -13,7 +13,7 @@ from security import   authenticate, identity
 
 
 from resources.user import UserRegister, UserArray, UserDetails
-from resources.survey import Survey, Surveydata, Surveyresponse, GetSurveyResponses
+from resources.survey import Survey, Surveydata, Surveyresponse, GetSurveyResponses, SurveyArray
 from resources.template import Template, TemplateArray, Templatedata
 
 from models.user import UserModel
@@ -37,6 +37,8 @@ api.add_resource(Survey, '/survey')
 api.add_resource(Surveydata, '/surveydata/<string:name>')
 api.add_resource(Surveyresponse, '/surveyresponse')
 api.add_resource(GetSurveyResponses, '/surveyresponses/<int:survey_id>')
+api.add_resource(SurveyArray, '/surveyarray/<int:creator_id>')
+
 
 
 

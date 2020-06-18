@@ -12,6 +12,7 @@ from data.surveyscore import Surveyscore
 from data.tabstructure import Tabstructure
 from data.tabquestion import TabQuestion
 from data.tabresponse import Tabresponse, Qresponses
+from models.user import UserModel
 from pprint import pprint
 import json
 
@@ -44,6 +45,29 @@ class Surveymodel(Resource):
         queryset = Surveyform.objects().order_by('-_id')
         survey_collection = queryset.to_json()
                 
+        return survey_collection
+
+    def find_all_surveys_for_userid(creator_id)  -> Surveyform:
+        
+        pprint('find all Surveys for User id method reached')
+        survey = Surveyform()
+        queryset = Surveyform.objects(surveycreator_id=creator_id).order_by('-_id')
+        pprint( queryset)
+        survey_collection = []
+        for survey_obj in queryset:
+            pprint('iterating through queryset')
+            taglist = []
+            for tag in survey_obj['surveytags'] :
+                taglist.append(tag)
+            user = UserModel.finduser_by_user_id(survey_obj.surveycreator_id)
+            if user:
+               s_creator_name = user.username
+            else:
+                s_creator_name = "Anonymous"
+
+            survey_object = {'survey_id': survey_obj._id, 'survey_name':survey_obj.survey_name, 'surveycreator_id': survey_obj.surveycreator_id, 's_creator_name': s_creator_name, 'surveytags' : taglist}
+            survey_collection.append(survey_object)
+
         return survey_collection
    
     
