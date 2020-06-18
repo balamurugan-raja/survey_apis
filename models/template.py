@@ -49,7 +49,12 @@ class Templatemodel(Resource):
             for tag in template_obj['tags'] :
                 taglist.append(tag)
             user = UserModel.finduser_by_user_id(template_obj.templatecreator_id)
-            template_object = {'template_id': template_obj._id, 'template_name':template_obj.name, 'templatecreator_id': template_obj.templatecreator_id, 't_creator_name': user.username, 'taglist' : taglist}
+            if user:
+               t_creator_name = user.username
+            else:
+                t_creator_name = "Anonymous"
+
+            template_object = {'template_id': template_obj._id, 'template_name':template_obj.name, 'templatecreator_id': template_obj.templatecreator_id, 't_creator_name': t_creator_name, 'taglist' : taglist}
             template_collection.append(template_object)
 
         return template_collection
