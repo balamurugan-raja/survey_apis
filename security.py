@@ -1,14 +1,14 @@
-from werkzeug.security import safe_str_cmp
-from models.user import UserModel
-from pprint import pprint
+from passlib.context import CryptContext
 
-def authenticate(username, password):
-    user = UserModel.find_by_username(username)
-    pprint(user)
-    if user and safe_str_cmp(user.password, password):
-        return user
+pwd_context = CryptContext(
+        schemes=["pbkdf2_sha256"],
+        default="pbkdf2_sha256",
+        pbkdf2_sha256__default_rounds=30000
+)
+
+def encrypt_password(password):
+    return pwd_context.encrypt(password)
 
 
-def identity(payload):
-    user_id = payload['identity']
-    return UserModel.find_by_id(user_id)
+def check_encrypted_password(password, hashed):
+    return pwd_context.verify(password, hashed)

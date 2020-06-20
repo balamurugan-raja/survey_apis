@@ -10,7 +10,9 @@ PyJWT==1.4.2
 Werkzeug==1.0.1
 Flask-RESTful==0.3.8
 Flask-JWT==0.3.2
+Flask-JWT-Extended
 pymongo==3.10.1
 uwsgi
 mongoengine
 flask-cors
+passlib

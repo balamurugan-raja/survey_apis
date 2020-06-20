@@ -1,6 +1,6 @@
 from flask import Flask, jsonify
 from flask_restful import Resource, reqparse, request
-from flask_jwt import jwt_required
+from flask_jwt_extended import jwt_required
 import pymongo
 from pymongo import MongoClient
 from bson import json_util
@@ -11,7 +11,7 @@ from pprint import pprint
 
 class Survey(Resource):
     
-    @jwt_required()
+    @jwt_required
     def post(self):
         data = request.get_json()
         
@@ -33,7 +33,7 @@ class Survey(Resource):
         else:
             return {"message": "Survey Not Created."}
     
-    @jwt_required()
+    @jwt_required
     def get(self):
         
         pprint("reached survey array method")
@@ -59,7 +59,7 @@ class Surveydata(Resource):
             return {"message": "No such Survey exists."}
 
 class SurveyArray(Resource):
-    @jwt_required()
+    @jwt_required
     def get(self, creator_id):
         surveysindb = Surveymodel.find_all_surveys_for_userid(creator_id)
         if surveysindb:
@@ -72,7 +72,8 @@ class Surveyresponse(Resource):
     def post(self):
         pprint('surveyresponse post method')
         data = request.get_json()
-        if Surveymodel.get_sur_res_by_part_id(data['survey_id'], data['participant_id']):
+        
+        if data['participant_id'] != 1 and Surveymodel.get_sur_res_by_part_id(data['survey_id'], data['participant_id']):
             return {"message": "Survey response for this Participant already exists."}, 208
         else :
             surveres_tobecreated = Surveymodel.surveyresmapper(data)
@@ -85,7 +86,7 @@ class Surveyresponse(Resource):
         
 
 class GetSurveyResponses(Resource):
-    @jwt_required()
+    @jwt_required
     def get(self, survey_id):
         pprint('surveyresponse get method')
         

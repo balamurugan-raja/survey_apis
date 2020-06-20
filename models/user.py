@@ -8,6 +8,7 @@ from flask_jwt import jwt_required
 from data.user import User
 from pprint import pprint
 import json
+from security import encrypt_password, check_encrypted_password
 
 class UserModel():
     
@@ -37,9 +38,14 @@ class UserModel():
     def finduser_by_username(username) -> User:
         pprint(username)
         login_user = User.objects(username=username).first()
-                
+
+        retuserdetails = {}        
         if login_user:
-            retuserdetails = login_user.to_json()
+            retuserdetails['username'] = login_user.username
+            retuserdetails['_id'] = login_user._id
+            retuserdetails['email'] = login_user.email
+            retuserdetails['role'] = login_user.role
+            
         else:
             retuserdetails = None
         return retuserdetails
@@ -67,14 +73,63 @@ class UserModel():
         return user
 
    
-    @classmethod
-    def create_user(cls, _id, email, username, password, role)  -> User:
+      
+    def register_user(data)  -> User:
         user = User()
-        user._id =_id
-        user.email = email
-        user.username = username
-        user.password = password
-        user.role = role
+        user._id = UserModel.getcounter()
+        user.email = data['email']
+        user.username = data['username']
+        user.password = encrypt_password(data['password'])
+        user.role = data['role']
         user.save()
         return user
 
+    def getcounter():
+        user = User()
+        counter = 1
+        firstuser = User.objects().order_by('-_id').first()
+        if firstuser:
+            counter = (firstuser._id) + 1
+            
+        return counter
+    
+    def find_all_users()  -> User:
+        user = User()
+        queryset = User.objects().order_by('-_id')
+        
+        user_collection = []
+        for user in queryset:
+            retuserdetails = {}
+            retuserdetails['username'] = user.username
+            retuserdetails['_id'] = user._id
+            retuserdetails['email'] = user.email
+            retuserdetails['role'] = user.role
+            user_collection.append(retuserdetails)
+        return user_collection
+    
+    def delete_user(username)  -> User:
+        user = User()
+        del_user = User.objects(username=username)
+        del_user.delete()
+
+        del_user = User.objects(username=username)       
+        return del_user
+    
+    def update_user(data, username)  -> User:
+        
+        exist_user = User.objects(username=username).first()
+        
+        if exist_user:
+            if data['email']:
+                exist_user.email = data['email']
+            if data['username']:
+                exist_user.username = data['username']
+            if data['password']:
+                    exist_user.password = encrypt_password(data['password'])
+            if data['role']:
+                exist_user.role = data['role']
+                   
+            updated_user = exist_user.save()
+            return updated_user
+
+        return exist_user
