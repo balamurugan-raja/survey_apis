@@ -16,7 +16,7 @@ class Templatemodel(Resource):
     
     
     def find_by_templatename(templatename) -> Template:
-        pprint(templatename)
+        
         existingtemplateobject = Template.objects(name=templatename).first()
         if existingtemplateobject:
             templateobject = existingtemplateobject.to_json()
@@ -26,7 +26,7 @@ class Templatemodel(Resource):
     
       
     def find_by_templateid(templateid) -> Template:
-        pprint(templateid)
+        
         templateobject = Template.objects(_id=templateid).first()
                 
         if templateobject:
@@ -39,12 +39,12 @@ class Templatemodel(Resource):
     
     def find_all_templates()  -> Template:
         template = Template()
-        pprint('find all template method reached')
+        
         queryset = Template.objects().order_by('-_id')
-        pprint( queryset)
+        
         template_collection = []
         for template_obj in queryset:
-            pprint('iterating through queryset')
+            
             taglist = []
             for tag in template_obj['tags'] :
                 taglist.append(tag)
@@ -61,7 +61,7 @@ class Templatemodel(Resource):
    
     
     def requestmapper(data)  -> Template:
-        pprint("Entered Mapper method")
+        
         template = Template()
         template.name =data['template_name']
 
@@ -92,20 +92,12 @@ class Templatemodel(Resource):
             temp_tablist.append(tabobject)
 
         template.tabs = temp_tablist            
-        pprint(template)
-                     
-            
         return template
     
     #Method not in use
     def responsemapper(queriedtemplate):
-        pprint("Entered Response Mapper method")
-
         responsetemplate = [{'template_id': queriedtemplate._id, 'template_name':queriedtemplate.name, "tags":[] }]
-        
-        
         tabquestions= []
-
         responsetemplate['_id': queriedtemplate._id]
         responsetemplatetags= []
         for tags in queriedtemplate.tags:
@@ -120,9 +112,6 @@ class Templatemodel(Resource):
                     response_question = [{'q_id': question.q_id, 'q_text': question.q_text, 'responseoptions':[]} ]
             response_tab= [{'tabname': tabs.tabname, 'tab_questions': []}]
             responsetabs.append()
-        response
-
-
         responsearray = []
         template = Template()
         template.name =data['template_name']
@@ -131,7 +120,6 @@ class Templatemodel(Resource):
         for tag in data['tags']:
             temp_taglist.append(tag)
         
-        pprint(temp_taglist)
         template.tags = temp_taglist
 
         temp_tablist = []
@@ -152,9 +140,7 @@ class Templatemodel(Resource):
             temp_tablist.append(tabobject)
 
         template.tabs = temp_tablist            
-        pprint(template)
-                     
-            
+           
         return template
     
     
@@ -164,7 +150,7 @@ class Templatemodel(Resource):
         firsttemplate = Template.objects().order_by('-_id').first()
         if firsttemplate:
             counter = (firsttemplate._id) + 1
-            pprint(counter)
+            
         return counter
     
 

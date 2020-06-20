@@ -20,7 +20,7 @@ class Surveymodel(Resource):
     
     
     def find_by_surveyname(surveyname) -> Surveyform:
-        pprint(surveyname)
+        
         surveyobject = Surveyform.objects(survey_name=surveyname).first()
         if surveyobject:
             retsurveyobject = surveyobject.to_json()
@@ -29,7 +29,7 @@ class Surveymodel(Resource):
     
       
     def find_by_surveyid(surveyid) -> Surveyform:
-        pprint(surveyid)
+        
         surveyobject = Surveyform.objects(_id=surveyid).first()
                 
         if surveyobject:
@@ -49,13 +49,13 @@ class Surveymodel(Resource):
 
     def find_all_surveys_for_userid(creator_id)  -> Surveyform:
         
-        pprint('find all Surveys for User id method reached')
+        
         survey = Surveyform()
         queryset = Surveyform.objects(surveycreator_id=creator_id).order_by('-_id')
-        pprint( queryset)
+        
         survey_collection = []
         for survey_obj in queryset:
-            pprint('iterating through queryset')
+            
             taglist = []
             for tag in survey_obj['surveytags'] :
                 taglist.append(tag)
@@ -72,7 +72,7 @@ class Surveymodel(Resource):
    
     
     def requestmapper(data)  -> Surveyform:
-        pprint("Entered Mapper method")
+        
         survey = Surveyform()
         survey._id = Surveymodel.getcounter()
         survey.survey_name =data['survey_name']
@@ -83,7 +83,6 @@ class Surveymodel(Resource):
         for tag in data['surveytags']:
             temp_taglist.append(tag)
         
-        pprint(temp_taglist)
         survey.surveytags = temp_taglist
 
         temp_tablist = []
@@ -106,13 +105,9 @@ class Surveymodel(Resource):
             temp_tablist.append(tabobject)
 
         survey.tabs = temp_tablist            
-        pprint(survey)
-                     
-            
         return survey
     
     def get_sur_res_by_surveyid(survey_id) -> Surveyresponse:
-        pprint(survey_id)
         surveyresobject = Surveyresponse.objects(survey_id=survey_id)
         if surveyresobject:
             retsurveyresobject = surveyresobject.to_json()
@@ -121,7 +116,6 @@ class Surveymodel(Resource):
             return surveyresobject
     
     def get_sur_res_by_part_id(survey_id, participant_id) -> Surveyresponse:
-        pprint(survey_id)
         surveyresobject = Surveyresponse.objects(survey_id=survey_id, participant_id=participant_id)
         if surveyresobject:
             retsurveyresobject = surveyresobject.to_json()
@@ -131,7 +125,6 @@ class Surveymodel(Resource):
     
     
     def surveyresmapper(data) -> Surveyresponse:
-        pprint("Entered Mapper method")
         survey = Surveyresponse()
         survey._id = Surveymodel.getrespcounter()
         survey.participant_id = data['participant_id']
@@ -168,9 +161,7 @@ class Surveymodel(Resource):
             temp_survey_scores.append(temp_surveyscore)
         
         survey.survey_scores = temp_survey_scores
-
-        pprint(survey)
-                
+        
         return survey
     
     def getcounter():
@@ -179,7 +170,6 @@ class Surveymodel(Resource):
         firstsurvey = Surveyform.objects().order_by('-_id').first()
         if firstsurvey:
             counter = (firstsurvey._id) + 1
-            pprint(counter)
         return counter
     
     def getrespcounter():
@@ -188,7 +178,7 @@ class Surveymodel(Resource):
         firstsurvey = Surveyresponse.objects().order_by('-_id').first()
         if firstsurvey:
             counter = (firstsurvey._id) + 1
-            pprint(counter)
+            
         return counter
     
 
