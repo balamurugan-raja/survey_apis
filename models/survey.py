@@ -33,9 +33,8 @@ class Surveymodel(Resource):
         surveyobject = Surveyform.objects(_id=surveyid).first()
                 
         if surveyobject:
-            pprint(surveyobject.name)
-        else:
-            surveyobject = None
+            retsurveyobject = surveyobject.to_json()
+            return retsurveyobject
         return surveyobject
 
    

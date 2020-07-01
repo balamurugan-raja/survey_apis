@@ -58,6 +58,15 @@ class Surveydata(Resource):
         else:
             return {"message": "No such Survey exists."}
 
+class SurveyfromID(Resource):
+    #@jwt_required()
+    def get(self,survey_id):
+        surveyindb = Surveymodel.find_by_surveyid(survey_id)
+        if surveyindb:
+            return surveyindb
+        else:
+            return {"message": "No such Survey exists."}
+
 class SurveyArray(Resource):
     @jwt_required
     def get(self, creator_id):
