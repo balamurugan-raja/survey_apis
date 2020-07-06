@@ -34,6 +34,25 @@ class Survey(Resource):
             return {"message": "Survey Not Created."}
     
     @jwt_required
+    def put(self):
+        data = request.get_json()
+        
+        pprint('survey Update method')
+        surveyindb = Surveymodel.find_by_surveyname(data['survey_name'])
+        if surveyindb is None:
+            return {"message": "Survey with that Name doesn't exist."}, 400
+        
+        survey_tobeupdated= Surveymodel.requestmapper(data)
+        survey_tobeupdated._id = data['survey_id']
+        survey_updated = survey_tobeupdated.save()
+        
+        if survey_updated:
+            pprint(survey_updated._id)
+            return {"message": "Survey updated successfully.", "survey_id": survey_updated._id}, 201
+        else:
+            return {"message": "Survey Not Created."}
+
+    @jwt_required
     def get(self):
         
         pprint("reached survey array method")

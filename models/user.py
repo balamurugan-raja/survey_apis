@@ -53,8 +53,16 @@ class UserModel():
     def finduser_by_user_id(user_id) -> User:
         pprint(user_id)
         login_user = User.objects(_id=user_id).first()
-                
-        return login_user
+        retuserdetails = {}        
+        if login_user:
+            retuserdetails['username'] = login_user.username
+            retuserdetails['_id'] = login_user._id
+            retuserdetails['email'] = login_user.email
+            retuserdetails['role'] = login_user.role
+            
+        else:
+            retuserdetails = None
+        return retuserdetails
 
     @classmethod
     def find_by_id(cls, _id) -> User:

@@ -9,7 +9,7 @@ from pprint import pprint
 
 import mongoengine
 
-from resources.user import UserRegister, UserArray, UserDetails, UserLogin, TokenRefresh, UserLogOut
+from resources.user import UserRegister, UserArray, UserDetails, UserLogin, TokenRefresh, UserLogOut, UserFromId
 from resources.survey import Survey, Surveydata, Surveyresponse, GetSurveyResponses, SurveyArray, SurveyfromID
 from resources.template import Template, TemplateArray, Templatedata
 
@@ -57,6 +57,7 @@ api.add_resource(UserLogin, '/auth')
 api.add_resource(UserRegister, '/register')
 api.add_resource(UserArray, '/userarray')
 api.add_resource(UserDetails, '/user/<string:username>')
+api.add_resource(UserFromId, '/userfromid/<int:user_id>')
 api.add_resource(TokenRefresh, '/refresh')
 api.add_resource(UserLogOut, '/logout')
 

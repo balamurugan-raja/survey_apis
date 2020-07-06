@@ -47,6 +47,28 @@ class Template(Resource):
                 pprint(userobj)
         pprint(userarray)
         return userarray
+    
+    @jwt_required
+    def put(self):
+        data = request.get_json()
+        
+        #data = Template.parser.parse_args()
+        pprint('template post method')
+        templateindb = Templatemodel.find_by_templatename(data['template_name'])
+        if templateindb is None:
+            return {"message": "Template with that Name doesn't exist."}, 400
+        
+        
+
+        template_tobeupdated = Templatemodel.requestmapper(data)
+        template_tobeupdated._id = data['template_id']
+        saved_template = template_tobeupdated.save()
+        
+        if saved_template:
+            pprint(saved_template._id)
+            return {"message": "Template Updated successfully.", "template_id": saved_template._id}, 201
+        else:
+            return {"message": "Template Not Saved."}
 
 
 class Templatedata(Resource):

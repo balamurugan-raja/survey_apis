@@ -66,6 +66,14 @@ class UserArray(Resource):
             return userarray
         return {'message': 'No users found'}
 
+class UserFromId(Resource):
+    @jwt_required
+    def get(self, user_id):
+        user_details = UserModel.finduser_by_user_id(user_id)
+        if user_details:
+            return user_details
+        return {'message': 'User details not found'}
+
 class UserDetails(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('username',
