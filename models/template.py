@@ -50,7 +50,7 @@ class Templatemodel(Resource):
                 taglist.append(tag)
             user = UserModel.finduser_by_user_id(template_obj.templatecreator_id)
             if user:
-               t_creator_name = user.username
+               t_creator_name = user['username']
             else:
                 t_creator_name = "Anonymous"
 
