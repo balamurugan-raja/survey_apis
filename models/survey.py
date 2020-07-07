@@ -60,7 +60,7 @@ class Surveymodel(Resource):
                 taglist.append(tag)
             user = UserModel.finduser_by_user_id(survey_obj.surveycreator_id)
             if user:
-               s_creator_name = user.username
+               s_creator_name = user['username']
             else:
                 s_creator_name = "Anonymous"
 
