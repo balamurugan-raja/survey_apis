@@ -123,6 +123,28 @@ class GetSurveyResponses(Resource):
             return survey_respones
         else:
             return {"message": "Survey Response not found"}
+
+class SurveyCompare(Resource):
+    @jwt_required
+    def post(self):
+        data = request.get_json()
+        
+        pprint('survey compare post method')
+        surveyindb = Surveymodel.find_by_surveyname(data['survey_name'])
+        if surveyindb:
+            return {"message": "Survey with that Name already exists."}, 400
+        
+        
+
+        survey_tobecreated = Surveymodel.requestmapper(data)
+        
+        survey = survey_tobecreated.save()
+        
+        if survey_tobecreated:
+            pprint(survey_tobecreated._id)
+            return {"message": "Survey created successfully.", "survey_id": survey_tobecreated._id}, 201
+        else:
+            return {"message": "Survey Not Created."}
         
         
 

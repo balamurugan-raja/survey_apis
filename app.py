@@ -19,7 +19,7 @@ import data.mongo_setup as mongo_setup
 
 app = Flask(__name__)
 app.config['PROPAGATE_EXCEPTIONS'] = True
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 600
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = False
 app.config['JWT_BLACKLIST_ENABLED'] = True
 app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 app.secret_key = 'rb'

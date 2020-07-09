@@ -9,6 +9,7 @@ from flask_jwt import jwt_required
 from data.surveyform import Surveyform
 from data.surveyresponse import Surveyresponse
 from data.surveyscore import Surveyscore
+from data.surveycompare import Surveycompare
 from data.tabstructure import Tabstructure
 from data.tabquestion import TabQuestion
 from data.tabresponse import Tabresponse, Qresponses
@@ -179,5 +180,42 @@ class Surveymodel(Resource):
             counter = (firstsurvey._id) + 1
             
         return counter
+
+    
+    def sur_comp_req_mapper(data)  -> Surveycompare:
+        
+        surveycompare = Surveycompare()
+        survey._id = data['survey_id']
+        survey.survey_name =data['survey_name']
+        survey.template_id = data['template_id']
+        survey.surveycreator_id = data['surveycreator_id']
+        
+        temp_taglist = []
+        for tag in data['surveytags']:
+            temp_taglist.append(tag)
+        
+        survey.surveytags = temp_taglist
+
+        temp_tablist = []
+        for tab in data['tabs']:
+            tabobject = Tabstructure()
+            tabobject.tabname = tab['tabname']
+            tabquestionobjectlist = []
+            for tabitem in tab['tabquestions']:
+                tabquestionobject= TabQuestion()
+                tabquestionobject.q_id = tabitem['q_id']
+                tabquestionobject.q_text = tabitem['q_text']
+                tabquestionobject.q_responsetype = tabitem['q_responsetype']
+                if tabquestionobject.q_responsetype == "select" :
+                    responseoptions =[]
+                    for resoption in tabitem['q_responseoptions']:
+                        responseoptions.append(resoption)
+                    tabquestionobject.q_responseoptions= responseoptions
+                tabquestionobjectlist.append(tabquestionobject)
+            tabobject.tabquestions = tabquestionobjectlist
+            temp_tablist.append(tabobject)
+
+        survey.tabs = temp_tablist            
+        return survey
     
 
