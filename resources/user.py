@@ -152,7 +152,7 @@ class UserLogin(Resource):
 
         if user and check_encrypted_password(data['password'],user.password ):
             # when authenticated, return a fresh access token and a refresh token
-            access_token = create_access_token(identity=user.role, fresh=True)
+            access_token = create_access_token(identity=user.role, fresh=True, expires_delta=False)
             refresh_token = create_refresh_token(user.id)
             return {
                 'access_token': access_token,
